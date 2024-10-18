@@ -607,7 +607,7 @@ var _ = Describe("MinIO - Clusters Recovery from Barman Object Store", Label(tes
 			AssertCreateCluster(namespace, clusterName, clusterSourceFileMinio, env)
 
 			By("verify test connectivity to minio using barman-cloud-wal-archive script", func() {
-				primaryPod, err := clusterutils.GetCluster(env.Ctx, env.Client, namespace, clusterName)
+				primaryPod, err := clusterutils.GetClusterPrimary(env.Ctx, env.Client, namespace, clusterName)
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(func() (bool, error) {
 					connectionStatus, err := minio.TestConnectivityUsingBarmanCloudWalArchive(
@@ -739,7 +739,7 @@ var _ = Describe("MinIO - Clusters Recovery from Barman Object Store", Label(tes
 				"00000002",
 			)
 			By("delete restored cluster", func() {
-				Expect(objects.CreateObject(env.Ctx, env.Client, restoredCluster)).To(Succeed())
+				Expect(objects.DeleteObject(env.Ctx, env.Client, restoredCluster)).To(Succeed())
 			})
 		})
 
